@@ -12,10 +12,10 @@
 #   -v /home/data/db/test:/opt/oracle/oradata \
 #   oracle/database:12.2.0.1.170718-ee
 
-FROM	oracle/database/12.2.0.1
+FROM	oracle/database/12.2.0.1-ee:latest
 MAINTAINER pete@dinin.net    
 
-ENV  OJVM_PATCH="27923353" \
+ENV  OJVM_PATCH ="27923353" \
      RU_PATCH="28163133" \ 
      OPATCH_FILE="p6880880_180000_Linux-x86-64.zip"
 
@@ -26,17 +26,18 @@ ENV  OJVM_PATCH_FILE="p"$OJVM_PATCH"_122010_Linux-x86-64.zip" \
 USER	root
 WORKDIR	/home/oracle
 COPY	$RU_PATCH_FILE $OJVM_PATCH_FILE $OPATCH_FILE $INSTALL_DIR/
+COPY    $START_FILE $ORACLE_BASE/
 RUN	chown oracle:dba $INSTALL_DIR/$RU_PATCH_FILE $INSTALL_DIR/$OJVM_PATCH_FILE $INSTALL_DIR/$OPATCH_FILE $INSTALL_DIR
 
 USER	oracle
 WORKDIR $INSTALL_DIR
 RUN	unzip -o $INSTALL_DIR/$OPATCH_FILE -d $ORACLE_HOME && \
-        unzip -o $INSTALL_DIR/$RU_PATCH_FILE -d $INSTALL_DIR && \
-        unzip -o $INSTALL_DIR/$OJVM_PATCH_FILE -d $INSTALL_DIR && \
+        unzip $INSTALL_DIR/$RU_PATCH_FILE -d $INSTALL_DIR && \
+        unzip $INSTALL_DIR/$OJVM_PATCH_FILE -d $INSTALL_DIR && \
 	$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -ph $INSTALL_DIR/$RU_PATCH && \
 	$ORACLE_HOME/OPatch/opatch apply -silent $INSTALL_DIR/$RU_PATCH && \
         $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -ph $INSTALL_DIR/$OJVM_PATCH && \
-        $ORACLE_HOME/OPatch/opatch apply -silent $INSTALL_DIR/$OJVM_PATCH 
+        $ORACLE_HOME/OPatch/opatch apply -silent $INSTALL_DIR/$OJVM_PATCH && 
 
 USER    root
 WORKDIR /home/oracle

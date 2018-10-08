@@ -25,7 +25,7 @@ fi
 BUILD_START=$(date '+%s')
 docker build --force-rm=true --no-cache=true \
        $PROXY_SETTINGS --build-arg DB_EDITION=ee \
-       -t "oracle/database/12.2.0.1-ee:1" .
+       -t "oracle/database/12.2.0.1" .
 
 # Remove dangling images (intermitten images with tag <none>)
 yes | docker image prune > /dev/null

@@ -50,7 +50,6 @@ ENV PATH=$ORACLE_HOME/bin:$ORACLE_HOME/OPatch/:/usr/sbin:$PATH \
 # Copy files needed during both installation and runtime
 # -------------
 COPY $SETUP_LINUX_FILE $CHECK_SPACE_FILE $INSTALL_DIR/
-COPY $RUN_FILE $START_FILE $CREATE_DB_FILE $CONFIG_RSP $PWD_FILE $CHECK_DB_FILE $USER_SCRIPTS_FILE $ORACLE_BASE/
 
 RUN chmod ug+x $INSTALL_DIR/*.sh && \
     sync && \
@@ -97,13 +96,13 @@ USER root
 RUN $ORACLE_BASE/oraInventory/orainstRoot.sh && \
     $ORACLE_HOME/root.sh
 
-USER oracle
-WORKDIR /home/oracle
+#USER oracle
+#WORKDIR /home/oracle
 
-VOLUME ["$ORACLE_BASE/oradata"]
-EXPOSE 1521 5500
-HEALTHCHECK --interval=1m --start-period=5m \
-   CMD "$ORACLE_BASE/$CHECK_DB_FILE" >/dev/null || exit 1
+#VOLUME ["$ORACLE_BASE/oradata"]
+#EXPOSE 1521 5500
+#HEALTHCHECK --interval=1m --start-period=5m \
+#   CMD "$ORACLE_BASE/$CHECK_DB_FILE" >/dev/null || exit 1
 
 # Define default command to start Oracle Database. 
-CMD exec $ORACLE_BASE/$RUN_FILE
+#CMD exec $ORACLE_BASE/$RUN_FILE
