@@ -25,7 +25,7 @@ fi
 BUILD_START=$(date '+%s')
 docker build --force-rm=true --no-cache=true \
        $PROXY_SETTINGS --build-arg DB_EDITION=ee \
-       -t "oracle/database:12.2.0.1-ee"  .
+       -t "oracle/database/12.2.0.1-ee:1" .
 
 # Remove dangling images (intermitten images with tag <none>)
 yes | docker image prune > /dev/null
@@ -33,4 +33,3 @@ yes | docker image prune > /dev/null
 BUILD_END=$(date '+%s')
 BUILD_ELAPSED=`expr $BUILD_END - $BUILD_START`
 
-docker build -t "oracle/database:12.2.0.1-ee" .
