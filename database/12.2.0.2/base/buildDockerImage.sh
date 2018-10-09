@@ -33,3 +33,4 @@ yes | docker image prune > /dev/null
 BUILD_END=$(date '+%s')
 BUILD_ELAPSED=`expr $BUILD_END - $BUILD_START`
 
+docker image tag oracle/database/12.2.0.1 oracle/database/12.2.0.1:base

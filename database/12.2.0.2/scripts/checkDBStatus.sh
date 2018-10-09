@@ -12,17 +12,17 @@
 # DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
 # 
 
-ORACLE_SID="`grep $ORACLE_HOME /etc/oratab | cut -d: -f1`"
-ORACLE_PDB="`ls -dl $ORACLE_BASE/oradata/$ORACLE_SID/*/ | grep -v pdbseed | awk '{print $9}' | cut -d/ -f6`"
+#ORACLE_SID="`grep $ORACLE_HOME /etc/oratab | cut -d: -f1`"
+#ORACLE_PDB="`ls -dl $ORACLE_BASE/oradata/$ORACLE_SID/*/ | grep -v pdbseed | awk '{print $9}' | cut -d/ -f6`"
 POSITIVE_RETURN="READ WRITE"
-ORAENV_ASK=NO
-source oraenv
+#ORAENV_ASK=NO
+#source oraenv
 
 # Check Oracle DB status and store it in status
 status=`sqlplus -s / as sysdba << EOF
    set heading off;
    set pagesize 0;
-   SELECT open_mode FROM v\\$pdbs WHERE name COLLATE BINARY_CI = '$ORACLE_PDB';
+   SELECT open_mode FROM v\\$pdbs WHERE name COLLATE BINARY_CI = rtrim('$ORACLE_PDB');
    exit;
 EOF`
 

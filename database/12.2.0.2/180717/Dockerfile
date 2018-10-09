@@ -12,7 +12,7 @@
 #   -v /home/data/db/test:/opt/oracle/oradata \
 #   oracle/database:12.2.0.1.170718-ee
 
-FROM	oracle/database/12.2.0.1
+FROM	oracle/database/12.2.0.1:base
 MAINTAINER pete@dinin.net    
 
 ENV  OJVM_PATCH="27923353" \
@@ -25,18 +25,23 @@ ENV  OJVM_PATCH_FILE="p"$OJVM_PATCH"_122010_Linux-x86-64.zip" \
 
 USER	root
 WORKDIR	/home/oracle
-COPY	$RU_PATCH_FILE $OJVM_PATCH_FILE $OPATCH_FILE $INSTALL_DIR/
-RUN	chown oracle:dba $INSTALL_DIR/$RU_PATCH_FILE $INSTALL_DIR/$OJVM_PATCH_FILE $INSTALL_DIR/$OPATCH_FILE $INSTALL_DIR
+RUN	mkdir $INSTALL_DIR && \
+        chown oracle:dba $INSTALL_DIR 
 
 USER	oracle
 WORKDIR $INSTALL_DIR
+COPY    $RU_PATCH_FILE $OJVM_PATCH_FILE $OPATCH_FILE $INSTALL_DIR/
 RUN	unzip -qo $INSTALL_DIR/$OPATCH_FILE -d $ORACLE_HOME && \
         unzip -qo $INSTALL_DIR/$RU_PATCH_FILE -d $INSTALL_DIR && \
         unzip -qo $INSTALL_DIR/$OJVM_PATCH_FILE -d $INSTALL_DIR && \
 	$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -ph $INSTALL_DIR/$RU_PATCH && \
 	$ORACLE_HOME/OPatch/opatch apply -silent $INSTALL_DIR/$RU_PATCH && \
         $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -ph $INSTALL_DIR/$OJVM_PATCH && \
-        $ORACLE_HOME/OPatch/opatch apply -silent $INSTALL_DIR/$OJVM_PATCH 
+        $ORACLE_HOME/OPatch/opatch apply -silent $INSTALL_DIR/$OJVM_PATCH  && \
+        rm -rf $ORACLE_HOME/.patch_storage && \
+        rm $ORACLE_HOME/bin/*O && \
+        rm $ORACLE_HOME/bin/*0 && \
+        rm -rf $INSTALL_DIR/*
 
 USER    root
 WORKDIR /home/oracle
@@ -45,5 +50,4 @@ RUN	rm -rf $INSTALL_DIR
 USER oracle
 WORKDIR /home/oracle
 
-# Define default command to start Oracle Database. 
-CMD exec $ORACLE_BASE/$RUN_FILE
+

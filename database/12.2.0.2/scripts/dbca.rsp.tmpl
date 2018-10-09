@@ -170,7 +170,7 @@ nationalCharacterSet=AL16UTF16
 # Default value : None
 # Mandatory     : NO
 #-----------------------------------------------------------------------------
-initParams=audit_trail=none,audit_sys_operations=false
+initParams=audit_trail=none,audit_sys_operations=false,db_create_file_dest=###ORACLE_BASE###/oradata
 
 #-----------------------------------------------------------------------------
 # Name          : listeners
@@ -181,7 +181,7 @@ initParams=audit_trail=none,audit_sys_operations=false
 # Valid values  : The list should be comma separated like "listener1,listener2".
 # Mandatory     : NO
 #-----------------------------------------------------------------------------
-#listeners=LISTENER
+listeners=LISTENER
 
 #-----------------------------------------------------------------------------
 # Name          : automaticMemoryManagement

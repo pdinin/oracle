@@ -30,6 +30,7 @@ cp $ORACLE_BASE/$CONFIG_RSP $ORACLE_BASE/dbca.rsp
 sed -i -e "s|###ORACLE_SID###|$ORACLE_SID|g" $ORACLE_BASE/dbca.rsp
 sed -i -e "s|###ORACLE_PDB###|$ORACLE_PDB|g" $ORACLE_BASE/dbca.rsp
 sed -i -e "s|###ORACLE_PWD###|$ORACLE_PWD|g" $ORACLE_BASE/dbca.rsp
+sed -i -e "s|###ORACLE_BASE###|$ORACLE_BASE|g" $ORACLE_BASE/dbca.rsp
 sed -i -e "s|###ORACLE_CHARACTERSET###|$ORACLE_CHARACTERSET|g" $ORACLE_BASE/dbca.rsp
 
 # If there is greater than 8 CPUs default back to dbca memory calculations
@@ -46,20 +47,9 @@ mkdir -p $ORACLE_HOME/network/admin
 echo "NAME.DIRECTORY_PATH= (TNSNAMES, EZCONNECT, HOSTNAME)" > $ORACLE_HOME/network/admin/sqlnet.ora
 
 # Listener.ora
-echo "LISTENER = 
-(DESCRIPTION_LIST = 
-  (DESCRIPTION = 
-    (ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC1)) 
-    (ADDRESS = (PROTOCOL = TCP)(HOST = 0.0.0.0)(PORT = 1521)) 
-  ) 
-) 
-
-SID_LIST_LISTENER =
-  (SID_LIST =
-     (SID_DESC =
-       (SID_NAME = $ORACLE_SID )
-       (ORACLE_HOME = $ORACLE_HOME ))
-  )
+#echo "LISTENER=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=IPC)(KEY=LISTENER))))" > $ORACLE_HOME/network/admin/listener.ora
+echo "LISTENER=(DESCRIPTION_LIST=(DESCRIPTION=(ADDRESS=(PROTOCOL=IPC)(KEY=EXTPROC1))(ADDRES=(PROTOCOL=TCP)(HOST=0.0.0.0)(PORT=1521))))
+SID_LIST_LISTENER=(SID_LIST=(SID_DESC=(SID_NAME=$ORACLE_SID)(ORACLE_HOME=$ORACLE_HOME)))
 
 DEDICATED_THROUGH_BROKER_LISTENER=ON
 DIAG_ADR_ENABLED = off
@@ -83,8 +73,17 @@ echo "$ORACLE_PDB=
 
 # Remove second control file, make PDB auto open
 sqlplus / as sysdba << EOF
-   ALTER SYSTEM SET control_files='$ORACLE_BASE/oradata/$ORACLE_SID/control01.ctl' scope=spfile;
+   declare
+     v_stmt   varchar2(1000);
+   begin
+     select 'ALTER SYSTEM SET control_files='''||max(name)||''' scope=spfile'
+     into v_stmt 
+	 from v$controlfile;
+     execute immediate v_stmt;
+   end;
+   /
    ALTER PLUGGABLE DATABASE $ORACLE_PDB SAVE STATE;
+   exec dbms_xdb_config.SetGlobalPortEnabled(TRUE);
    exit;
 EOF
 
