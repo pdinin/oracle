@@ -30,9 +30,9 @@ RUN	chown oracle:dba $INSTALL_DIR/$RU_PATCH_FILE $INSTALL_DIR/$OJVM_PATCH_FILE $
 
 USER	oracle
 WORKDIR $INSTALL_DIR
-RUN	unzip -o $INSTALL_DIR/$OPATCH_FILE -d $ORACLE_HOME && \
-        unzip -o $INSTALL_DIR/$RU_PATCH_FILE -d $INSTALL_DIR && \
-        unzip -o $INSTALL_DIR/$OJVM_PATCH_FILE -d $INSTALL_DIR && \
+RUN	unzip -qo $INSTALL_DIR/$OPATCH_FILE -d $ORACLE_HOME && \
+        unzip -qo $INSTALL_DIR/$RU_PATCH_FILE -d $INSTALL_DIR && \
+        unzip -qo $INSTALL_DIR/$OJVM_PATCH_FILE -d $INSTALL_DIR && \
 	$ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -ph $INSTALL_DIR/$RU_PATCH && \
 	$ORACLE_HOME/OPatch/opatch apply -silent $INSTALL_DIR/$RU_PATCH && \
         $ORACLE_HOME/OPatch/opatch prereq CheckConflictAgainstOHWithDetail -ph $INSTALL_DIR/$OJVM_PATCH && \
