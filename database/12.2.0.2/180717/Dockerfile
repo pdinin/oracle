@@ -23,13 +23,11 @@ ENV  OJVM_PATCH_FILE="p"$OJVM_PATCH"_122010_Linux-x86-64.zip" \
      RU_PATCH_FILE="p"$RU_PATCH"_122010_Linux-x86-64.zip"
 
 
-USER	root
-WORKDIR	/home/oracle
-RUN	mkdir $INSTALL_DIR && \
-        chown oracle:dba $INSTALL_DIR 
+USER    root
+COPY    --chown=oracle:dba $RU_PATCH_FILE $OJVM_PATCH_FILE $OPATCH_FILE $INSTALL_DIR/
 
-USER	oracle
-WORKDIR $INSTALL_DIR
+
+USER    oracle
 COPY    $RU_PATCH_FILE $OJVM_PATCH_FILE $OPATCH_FILE $INSTALL_DIR/
 RUN	unzip -qo $INSTALL_DIR/$OPATCH_FILE -d $ORACLE_HOME && \
         unzip -qo $INSTALL_DIR/$RU_PATCH_FILE -d $INSTALL_DIR && \
