@@ -21,6 +21,8 @@ if [ "$PROXY_SETTINGS" != "" ]; then
   echo "Proxy settings were found and will be used during the build."
 fi
 
+docker image pull oraclelinux:7-slim
+
 # BUILD THE IMAGE (replace all environment variables)
 BUILD_START=$(date '+%s')
 docker build --force-rm=true --no-cache=true \
