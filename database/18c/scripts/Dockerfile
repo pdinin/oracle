@@ -12,7 +12,7 @@
 #   -v /home/data/db/test:/opt/oracle/oradata \
 #   oracle/database:12.2.0.1.170718-ee
 
-FROM	oracle/database/12.2.0.1
+FROM	oracle/database/18c
 MAINTAINER pete@dinin.net    
 
 ENV CONFIG_RSP="dbca.rsp.tmpl" \
