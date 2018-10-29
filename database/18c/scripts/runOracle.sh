@@ -200,6 +200,6 @@ fi;
 
 # Tail on alert log and wait (otherwise container will exit)
 echo "The following output is now a tail of the alert.log:"
-tail -f $ORACLE_BASE/diag/rdbms/*/*/trace/alert*.log &
+tail -f $ORACLE_BASE/diag/rdbms/*/*/trace/alert*${ORACLE_SID}.log &
 childPID=$!
 wait $childPID
