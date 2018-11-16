@@ -9,14 +9,15 @@ export CONTAINER_ID=31  ## Should be exactly 2 numeric characters
 ## Container_Name is used to
 ## (1) Name = xxxx12
 ## (2) PDB Name = xxxx
-export CONTAINER_NAME=xe
+export CONTAINER_NAME=XE
+export PDB_NAME=PETE
 
 docker run -d      \
---name ${CONTAINER_NAME}${CONTAINER_ID}   \
+--name ${PDB_NAME}${CONTAINER_ID}   \
 -p 15${CONTAINER_ID}:1521   \
 -p 55${CONTAINER_ID}:5500   \
 -v /oradata:/opt/oracle/oradata   \
 -v /oradiag:/opt/oracle/diag      \
 oracle/database/18xe  
 
-docker logs -f  ${CONTAINER_NAME}${CONTAINER_ID}
+docker logs -f  ${PDB_NAME}${CONTAINER_ID}

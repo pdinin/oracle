@@ -134,6 +134,12 @@ else
   mkdir -p ${ORACLE_BASE}/oradata
   chown oracle.oinstall ${ORACLE_BASE}/oradata
 
+  sed -i "s/DBFILE_DEST=.*/DBFILE_DEST=\/opt\/oracle\/oradata/" /etc/sysconfig/oracle-xe-18c.conf
+
+  if [ "x$PDB_NAME" != "x" ]; then
+    sed -i "s/export PDB_NAME=.*/export PDB_NAME=${PDB_NAME}/" /etc/init.d/oracle-xe-18c  
+  fi
+
   ${ORACLE_CMD} configure
 
   # Enable EM remote access

@@ -47,7 +47,7 @@ from
  WHERE     action = 'APPLY'
        AND patch_id IN (TO_NUMBER ('$OJVM_PATCH'), TO_NUMBER ('$RU_PATCH'))
 union all
-select (count(1)+1)*-2 counter from v\$pdbs where open_mode='READ WRITE')
+select (count(1)+1)*-2 counter from cdb_pdbs where pdb_name not like 'PDB%SEED')
 ;
 exit;
 EOF`
